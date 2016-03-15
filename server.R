@@ -16,6 +16,7 @@ bComp = 1
 alpha = 0.05
 threshold = 0.001
 
+##################### FUNCTIONS ##################
 
 # Function for getting the meaning of the bf
 get_table_content = function(bf){
@@ -60,6 +61,7 @@ BinomForFixK = function(N, k, theta){
 # Function for plot beta
 pl.beta <- function(a,b,l,u,theta, asp = if(isLim) 1, ylim = if(isLim) c(0,1.1)){
   
+  # including limit cases
   if(isLim <- a == 0 || b == 0 || a == Inf || b == Inf){
     eps <- 1e-10
     x <- c(0, eps, (1:7)/16, 1/2+c(-eps,0,eps), (9:15)/16, 1-eps,1)
@@ -68,6 +70,7 @@ pl.beta <- function(a,b,l,u,theta, asp = if(isLim) 1, ylim = if(isLim) c(0,1.1))
     x <- seq(0, 1, length = 1025)
   }
   
+  # plot the beta function
   p <- ggplot() + geom_line(aes(x,dbeta(x,a,b))) 
   
   p <- p + ylab("beta(a,b)") + ggtitle(paste("beta(",a,",",b,")"))
@@ -95,12 +98,15 @@ pl.beta <- function(a,b,l,u,theta, asp = if(isLim) 1, ylim = if(isLim) c(0,1.1))
   p
 }
 
-#From Kruschke p.270
+#From Kruschke p.270 - part of Bayes factor closed form solution
 pD = function(k,N,a,b) { beta(k+a,N-k+b) / beta(a,b) }
 
+###################### SHINY ################
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
+  # updates the k-slider according to the selected N
+  # and fix k / fix N
   observe({
     updateSliderInput(
       session,
@@ -110,7 +116,7 @@ shinyServer(function(input, output, session) {
       max = input$N)
   })
   
-  # Calculates hdi
+  # Calculates hdi, updated if something is changed
   hdi_coins <- reactive({
     hdi_size = input$hdi / 100
     
@@ -121,13 +127,14 @@ shinyServer(function(input, output, session) {
     # hdi
     HDI = hdi(qbeta, hdi_size, shape1 = betaParam1, shape2 = betaParam2)
     
+    # list containig the calculated data
     list(lower = HDI[1],
          upper = HDI[2],
          beta1 = betaParam1,
          beta2 = betaParam2)
   })
   
-  # calculates the p value
+  # calculates the p value, updated if something is changed
   pvalue = reactive({
     k = input$k
     N = input$N
@@ -136,11 +143,17 @@ shinyServer(function(input, output, session) {
     pvalue <- 0
     plotValues <- NULL
     
+    # checks if N fix or k fix is selected and calculates the 
+    # corresponding p value
     if (input$option == "N fix") {
-      
+      # calculates p(k | N,theta)
       valueFork <- BinomForFixN(k, N, theta)
+      # max is first set to valueFork, later updated
       max <- valueFork
       
+      # calculates all the probabilities for k between 1 and
+      # N and calculates the p value from all the values lower 
+      # than valueFork
       for(i in 1:N+1){
         values[i] <- BinomForFixN(i-1, N, theta)
         if(values[i] > max){
@@ -153,8 +166,11 @@ shinyServer(function(input, output, session) {
       
       values[1] = values[N+1]
       
+      # calculates a vector with names for the x axis
+      # later used in the plot
       xachse = seq(from=0, to=N)
       
+      # list containig the calculated data
       list(values = values,
            valueFork = valueFork,
            pvalue = pvalue,
@@ -162,8 +178,16 @@ shinyServer(function(input, output, session) {
            xachse = xachse)
     }
     else if (input$option == "k fix") {
+      # calculates p(N | k,theta)
       valueForN <- BinomForFixK(N, k, theta)
+      # max is first set to valueForN, later updated
       max <- valueForN
+      
+      # for k fix, we have to calculate the first value of
+      # values outside the for-loop
+      # plotValues contains the data for the plot, values
+      # the data for the p value calculation
+      # they are the same, but plotValues is smaller
       values[1] = BinomForFixK(k,k, theta)
       plotValues[1] = values[1]
       
@@ -174,13 +198,21 @@ shinyServer(function(input, output, session) {
         max = values[1]
       }
       
+      # index is used to calculate a border to which
+      # we vary N while calculating
       index <- k
       if (k == 0) {
         index = 1
       }
       
+      # for loop updates values, plotValues and calculates the p value
       for(i in (k+1):(index*300)){
         values[i-k+1] <- BinomForFixK(i, k, theta)
+        
+        # We defined a threshold to do not put to much uninformative data into
+        # the plot
+        # If the value is lower than the threshold, we look if it is in a
+        # certain range (N+10) and if not, we do not put this data in the plot
         if(values[i-k+1] > threshold){
           plotValues[i-k+1] = values[i-k+1]
         }
@@ -188,16 +220,22 @@ shinyServer(function(input, output, session) {
           plotValues[i-k+1] = values[i-k+1]
         }
         
+        # updates max
         if(values[i-k+1] > max){
           max = values[i-k+1]
         }
         
+        # updates p value
         if(values[i-k+1] <= valueForN){
           pvalue <- pvalue + values[i-k+1]
         }
       }
       
+      # calculates a vector with names for the x axis
+      # later used in the plot
       xachse = seq(from=k, to= k+ length(plotValues)-1)
+      
+      # list containig the calculated data
       list(valueForN = valueForN,
            pvalue = pvalue,
            max = max,
@@ -206,39 +244,52 @@ shinyServer(function(input, output, session) {
     }
   })
   
+  # calculates the Bayes factor for the coin flips
+  #updated if something is changed
   bf_coins <- reactive({
     theta = input$theta
     k = input$k
     N = input$N
+    
+    # calculates the Bayes factor with the closed form from Kruschke
     BF = (theta^k * (1- theta)^(N-k)) / pD(k,N,aComp,bComp)
+    # list containig the calculated data
     list(BF = BF)
   })
   
+  # calculates the random data with specific correlation (bivariate)
+  #updated if something is changed
   corr_set = reactive({
     
     n <- input$N_cor
     corr <- input$corr
     
+    # calculates the data with mvrnorm and the selected correlation
     data = mvrnorm(n,
                    mu = c(0,0),
                    Sigma = matrix(c(1,corr,corr,1), ncol = 2),
                    empirical = TRUE)
     
+    # sets colnames
     colnames(data) <- c("x", "y")
     
     data.frame(data)
   })
   
+  # calculates the Bayes factor for the bivariate data
   linear_bf = reactive({
-    
+    # gets the data calculated above
     data = corr_set()
     
+    # calculates the Bayes facotr with lmBF, where a speficied
+    # model is compared to the intercept-only null model
     bf <- lmBF(y ~ x, data = data, iterations = 10000)
-    
   })
   
+  # renders the plot for the estimation tab
   output$plot_estimation <- renderPlot({
     
+    # gets all the reactive calculated stuff
     beta1 = hdi_coins()$beta1
     beta2 = hdi_coins()$beta2
     lower = hdi_coins()$lower
@@ -285,7 +336,7 @@ shinyServer(function(input, output, session) {
                ylab=paste(paste("P( k | N = " , N, ""),
                           paste(paste(",", theta, ""), ")", ""), ""))
       segments(0,valueFork, N+1, valueFork, lwd=3, col='red')
-      text(N-2, valueFork+.01, paste("p = ", round(pvalue, 4)),
+      text(N-2, valueFork+.01, paste("p = ", round(valueFork, 4)),
            col = "red", cex = 1 )
     }
     
@@ -304,7 +355,7 @@ shinyServer(function(input, output, session) {
                ylab=paste(paste("P( N | k = " , k, ""),
                           paste(paste(",", theta, ""), ")", ""), ""))
       segments(0,valueForN,length(plotValues), valueForN, lwd=3, col='red')
-      text(length(plotValues) - 2, valueForN+.01, paste("p = ", round(pvalue, 4)),
+      text(length(plotValues) - 2, valueForN+.01, paste("p = ", round(valueForN, 4)),
            col = "red", cex = 1 )
       
     }
