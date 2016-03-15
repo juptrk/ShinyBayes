@@ -149,10 +149,11 @@ shinyServer(function(input, output, session) {
       # calculates p(k | N,theta)
       valueFork <- BinomForFixN(k, N, theta)
       # max is first set to valueFork, later updated
+      # used to set the height of the y axis
       max <- valueFork
       
-      # calculates all the probabilities for k between 1 and
-      # N and calculates the p value from all the values lower 
+      # calculates all the probabilities for k between 0 and
+      # N and calculates the p value with all the values lower 
       # than valueFork
       for(i in 1:N+1){
         values[i] <- BinomForFixN(i-1, N, theta)
@@ -170,7 +171,7 @@ shinyServer(function(input, output, session) {
       # later used in the plot
       xachse = seq(from=0, to=N)
       
-      # list containig the calculated data
+      # list containing the calculated data
       list(values = values,
            valueFork = valueFork,
            pvalue = pvalue,
@@ -181,13 +182,15 @@ shinyServer(function(input, output, session) {
       # calculates p(N | k,theta)
       valueForN <- BinomForFixK(N, k, theta)
       # max is first set to valueForN, later updated
+      # used to set the height of the y axis
       max <- valueForN
       
       # for k fix, we have to calculate the first value of
       # values outside the for-loop
       # plotValues contains the data for the plot, values
       # the data for the p value calculation
-      # they are the same, but plotValues is smaller
+      # plotValues only contains values below a certain threshold
+      # to make the plot more clear
       values[1] = BinomForFixK(k,k, theta)
       plotValues[1] = values[1]
       
@@ -209,8 +212,8 @@ shinyServer(function(input, output, session) {
       for(i in (k+1):(index*300)){
         values[i-k+1] <- BinomForFixK(i, k, theta)
         
-        # We defined a threshold to do not put to much uninformative data into
-        # the plot
+        # We defined a threshold to prevent that too much uninformative data 
+        # is plotted
         # If the value is lower than the threshold, we look if it is in a
         # certain range (N+10) and if not, we do not put this data in the plot
         if(values[i-k+1] > threshold){
@@ -295,18 +298,23 @@ shinyServer(function(input, output, session) {
     lower = hdi_coins()$lower
     upper = hdi_coins()$upper
     
+    #plots the beta distribution and the hdi
     pl.beta(beta1, beta2, lower, upper, input$theta) 
   })
   
-  
+  # renders the text output for the hdi/ROPE
   output$text_rope <- renderText({
     
+    # gets all the reactive calculated stuff
     lower = hdi_coins()$lower
     upper = hdi_coins()$upper
     
+    # calculates the ROPE boundaries
     lowerBoundaryRope = input$theta - input$ROPE
     upperBoundaryRope = input$theta + input$ROPE
-    boolean = ifelse((lowerBoundaryRope >= lower && upperBoundaryRope <= upper), TRUE, FALSE)
+    # gets whether the ROPE interval is completely in the hdi or not
+    boolean = ifelse((lowerBoundaryRope >= lower && upperBoundaryRope <= upper),
+                     TRUE, FALSE)
     
     if (boolean) {
       paste("ROPE with epsilon = ", input$ROPE, " confirmes the HDI result.")
@@ -317,18 +325,23 @@ shinyServer(function(input, output, session) {
     
   })
   
+  # renders the plot for the p value
   output$plot_pvalue <- renderPlot({
     k = input$k
     N = input$N
     theta = input$theta
     
+    # look which calculation method was selected
     if (input$option == "N fix") {
+      
+      # gets all the reactive calculated stuff
       values = pvalue()$values
       valueFork = pvalue()$valueFork
       pvalue = pvalue()$pvalue
       max = pvalue()$max
       xachse = pvalue()$xachse
       
+      # plots the barplot with the calculated information
       barplot (height = values,col = ifelse(values <= valueFork, 'deeppink', 'green2'),
                xlim = c(0,N+2), xlab = "k", names.arg = xachse,
                ylim = c(0, max+0.05),space = 0, axes = TRUE,
@@ -341,12 +354,15 @@ shinyServer(function(input, output, session) {
     }
     
     else if (input$option == "k fix") {
+      
+      # gets all the reactive calculated stuff
       valueForN = pvalue()$valueForN
       pvalue = pvalue()$pvalue
       max = pvalue()$max
       xachse = pvalue()$xachse
       plotValues = pvalue()$values
       
+      # plots the barplot with the calculated information
       barplot (height = plotValues,col = ifelse(plotValues <= valueForN,
                                                 'deeppink', 'green2'),
                xlim = c(0, length(plotValues)-1), xlab = "N",
@@ -368,6 +384,7 @@ shinyServer(function(input, output, session) {
   # we use the reactive method pvalue() which 
   output$text_pvalue <- renderText({
 
+    # look which calculation method was selected
     if (input$option == "N fix") {
       pvalue <- pvalue()$pvalue
       if (pvalue <= alpha) {
