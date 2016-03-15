@@ -73,7 +73,7 @@ pl.beta <- function(a,b,l,u,theta, asp = if(isLim) 1, ylim = if(isLim) c(0,1.1))
   # plot the beta function
   p <- ggplot() + geom_line(aes(x,dbeta(x,a,b))) 
   
-  p <- p + ylab("beta(a,b)") + ggtitle(paste("beta(",a,",",b,")"))
+  p <- p + ggtitle(paste("beta(",a,",",b,")"))
   
   p <- p + geom_segment(aes(x = l, y = dbeta(l,a,b),
                             xend = u, yend = dbeta(u,a,b),
@@ -89,7 +89,7 @@ pl.beta <- function(a,b,l,u,theta, asp = if(isLim) 1, ylim = if(isLim) c(0,1.1))
   
   p <- p + geom_point(aes(x = u, y = dbeta(u,a,b)), col="red")
   
-  p <- p + geom_segment(aes(x=theta, y = 0, xend=theta, yend = 3), col="blue")
+  p <- p + geom_segment(aes(x=theta, y = 0, xend=theta, yend = 3, colour = "theta"))
   
   p <- p + geom_point(aes(x=theta, y = 3), col="blue")
   
@@ -349,7 +349,7 @@ shinyServer(function(input, output, session) {
                ylab=paste(paste("P( k | N = " , N, ""),
                           paste(paste(",", theta, ""), ")", ""), ""))
       segments(0,valueFork, N+1, valueFork, lwd=3, col='red')
-      text(N-2, valueFork+.01, paste("p = ", round(valueFork, 4)),
+      text(N- 5, max+0.025, paste("line: P(",k,"|" , N, ",", theta,") = ", round(valueFork, 4)),
            col = "red", cex = 1 )
     }
     
@@ -371,7 +371,7 @@ shinyServer(function(input, output, session) {
                ylab=paste(paste("P( N | k = " , k, ""),
                           paste(paste(",", theta, ""), ")", ""), ""))
       segments(0,valueForN,length(plotValues), valueForN, lwd=3, col='red')
-      text(length(plotValues) - 2, valueForN+.01, paste("p = ", round(valueForN, 4)),
+      text(length(plotValues) - 5, max+0.025, paste("line: P(",N,"|" , k, ",", theta,") = ", round(valueForN, 4)),
            col = "red", cex = 1 )
       
     }
