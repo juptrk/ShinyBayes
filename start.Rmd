@@ -1,0 +1,12 @@
+---
+title: "Start"
+output: html_document
+---
+
+
+**Hey! We're happy, that you're interested in learning more about the differences between Bayesian and Frequentist Data Analysis!**
+**This app is organised in the following parts:**
+
+**1) On the subpage "Frequentist vs. Bayesian", you'll get a short introduction and further information about the theory behind the analyses that are performed on the other subpages**  
+**2) The second subpage "Coin Flip Data" allows you to specify a coin flip experiment in terms of the resulting number of heads/tails and further specifications for the methods we look at.**    
+**3) The fird subpage "Bivariate Normal Data" allows you to specify a correlation. Then, you cam look at the linear model for a bivariate data set calculated from this correlation and the Bayes factor for this linear model.**
