@@ -1,3 +1,5 @@
+################## IMPORTS, FIXED VARIABLES ##########
+
 library(BEST)
 library(DT)
 library(prob)
@@ -56,7 +58,7 @@ BinomForFixK = function(N, k, theta){
 }
 
 # Function for plot beta
-pl.beta <- function(a,b,l,u, asp = if(isLim) 1, ylim = if(isLim) c(0,1.1)){
+pl.beta <- function(a,b,l,u,theta, asp = if(isLim) 1, ylim = if(isLim) c(0,1.1)){
   
   if(isLim <- a == 0 || b == 0 || a == Inf || b == Inf){
     eps <- 1e-10
@@ -84,6 +86,12 @@ pl.beta <- function(a,b,l,u, asp = if(isLim) 1, ylim = if(isLim) c(0,1.1)){
   
   p <- p + geom_point(aes(x = u, y = dbeta(u,a,b)), col="red")
   
+  p <- p + geom_segment(aes(x=theta, y = 0, xend=theta, yend = 3), col="blue")
+  
+  p <- p + geom_point(aes(x=theta, y = 3), col="blue")
+  
+  p <- p + geom_text(aes(x=theta+0.05,y=3,label=paste(theta)), col="blue")
+  
   p
 }
 
@@ -102,6 +110,7 @@ shinyServer(function(input, output, session) {
       max = input$N)
   })
   
+  # Calculates hdi
   hdi_coins <- reactive({
     hdi_size = input$hdi / 100
     
@@ -118,6 +127,7 @@ shinyServer(function(input, output, session) {
          beta2 = betaParam2)
   })
   
+  # calculates the p value
   pvalue = reactive({
     k = input$k
     N = input$N
@@ -234,7 +244,7 @@ shinyServer(function(input, output, session) {
     lower = hdi_coins()$lower
     upper = hdi_coins()$upper
     
-    pl.beta(beta1, beta2, lower, upper) 
+    pl.beta(beta1, beta2, lower, upper, input$theta) 
   })
   
   
@@ -360,7 +370,9 @@ shinyServer(function(input, output, session) {
     
     p <- p + geom_point(data= data,aes(x=data$x, y=data$y),color='red')
     
-    p <- p + xlab(input$Xaxis) + ylab(input$Yaxis)
+    p <- p + xlab(input$Xaxis) + ylab(input$Yaxis) 
+    
+    p <- p + ggtitle("Plot for the selected correlation")
     
     p <- p + geom_smooth(method = "lm", colour = "black", level = 0)
     
@@ -379,9 +391,8 @@ shinyServer(function(input, output, session) {
     
     bf_frame = get_table_content(BF$bf)
     
-    colnames(bf_frame) <- c("BF (linear vs. not linear)", "interpretation")
+    colnames(bf_frame) <- c("Bayes factor", "interpretation")
     bf_frame
   }, rownames = FALSE, options = list(paging = FALSE, searching = FALSE))
-  
   
 })

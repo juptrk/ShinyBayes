@@ -3,18 +3,18 @@ title: "comparison"
 author: "Julian Petruck"
 output: html_document
 ---
-
+  
+    
 Here we have choosen to compare two models:  
 
 1. M$_0$ has $\theta$ = 0.5 and k $\sim$ Binomial(0.5, N)  
 2. M$_1$ has $\theta$ $\sim$ Beta(1,1) and k $\sim$ Binomial(0.5, N)   
 
-The BF is build by dividing the probability of model 0 given the data through the probability of model 0 given the data. So  
+The BF is build by dividing the probability of model 0 given the data through the probability of model 0 given the data:
+  
 BF(M$_0$ > M$_1$) = $\frac{P(D|M_0)}{P(D|M_1)}$  
+  
 In our case this can be calculated quite easy, and doesn't have to be estimated.  
 The fraction can be transformed into the following formula for the Bayes Factor:  
+  
 BF(M$_0$ > M$_1$) = $\frac{\theta^k\cdot (1-\theta )^{(N-k)}}{ \frac{beta(k+a,N-k+b)}{beta(a,b)}}$
-
-...........TODO.......
-Hier eventuell noch die verschiedenen Ergebnisse laut Tabelle erläutern/ nennen/ Link für INterpretation o.ä?
-........................

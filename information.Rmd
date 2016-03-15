@@ -3,65 +3,62 @@
 </script>
 
 ## Frequentist vs. Bayesian
-Frequentists and Bayesians look at different things, the frequentists rather look at the frequency of some event A whereas Bayesians look at the degree of believe, that some event A occurs.  
-Bayesians can also look at unique events that can't be repeated (e.g. "Germany wins the World Cup 2018") as the integrate prior assumptions/ knowledge into the calculation of the probability. So what a Bayesian needs to do is to specify a prior and together with the likelihood that is given by the data achieves a posterior distribution.  
-These two approaches make a difference in the results we can get from them and the possibility we have. So does the frequentist approach with calculating p-values help researchers to reject a null hypothesis, but it isn't useful to consider other hypotheses.
+**Frequentists and Bayesians look at different things, the frequentists rather look at the frequency of some event A whereas Bayesians look at the degree of believe, that some event A occurs.**  
+**Bayesians can also look at unique events that can't be repeated (e.g. "Germany wins the World Cup 2018") as the integrate prior assumptions/ knowledge into the calculation of the probability. So what a Bayesian needs to do is to specify a prior and together with the likelihood that is given by the data achieves a posterior distribution.** 
+**These two approaches make a difference in the results we can get from them and the possibility we have. So does the frequentist approach with calculating p-values help researchers to reject a null hypothesis, but it isn't useful to consider other hypotheses.**
 
-For a good and more detailed explanation of the differences between the two approaches have a look [here](http://blog.keithw.org/2013/02/q-what-is-difference-between-bayesian.html).
+**For a good and more detailed explanation of the differences between the two approaches have a look [here](http://blog.keithw.org/2013/02/q-what-is-difference-between-bayesian.html).**
 
-.....TODO........
-Vielleicht Unterscheidung bei p- Wert zwischen ein und zweiseitig?
-Links erweitern, die unter wegmachen??
-For more information take a look here:  
-1. [General distinction](http://www.stat.ufl.edu/archived/casella/Talks/BayesRefresher.pdf)  
-2. [Bayesian Approach](https://en.wikipedia.org/wiki/Bayesian)  
-3. [Frequentist Approach](https://en.wikipedia.org/wiki/Frequentist_inference)  
-
-...................  
-
-### Explanations for the methods used in subtab "Coin Flips"
-
-In this tab we will have a look at coin flips. You can choose k and N(=how many heads (k) out of N flips) and a theta which specifies the bias you want to look at. So e.g. by choosing theta = 0.5 we will look at the case that the coin is fair, so the probability of getting a head or a tail is equal, it is 0.5.  
-You can analyse this input data in different ways:   
-
-1. Calculate the p-value  
-Here we calculate the p-value,which "is defined as the probability of obtaining a result equal to or "more extreme" than what was actually observed, assuming that the null hypothesis is true." [Wikipedia](https://en.wikipedia.org/wiki/P-value#Definition_and_interpretation)  
-For a p-value which is less than a certain threshold $\alpha$ (which is often .05), we talk about a significant p-value and we would then reject the null hypothesis we had (in our case that the coin is fair/ unbiased).
-You can decide whether to fix N or k. Fix N would mean that you look at an experiment where it was clear at the beginning that we're going to throw the coin N times and the variable we wanted to determine was k. The same case for fix k - here we would have said from the beginning, that we will throw the coin as long as it takes until we got k heads and we would look at how many flips we needed for this amount of heads.
+**For more information take a look here:**  
   
-2. Model comparison  
-Here we compare two models by calculating the so-called [Bayes-Factor BF](https://en.wikipedia.org/wiki/Bayes_factor). Hereby the coefficent of the probability of both models given the data is formed. The higher the coefficient the better is the model in the numerator compared to the model in the denominator.
+**1. [General distinction](http://www.stat.ufl.edu/archived/casella/Talks/BayesRefresher.pdf)**  
+**2. [Bayesian Approach](https://en.wikipedia.org/wiki/Bayesian)**  
+**3. [Frequentist Approach](https://en.wikipedia.org/wiki/Frequentist_inference)**   
+
+
+### Explanations for the methods used in subtab "Coin Flip Data"
+
+**In this tab we will have a look at coin flips. You can choose k and N(=how many heads (k) out of N flips) and a theta which specifies the bias you want to look at. So e.g. by choosing theta = 0.5 we will look at the case that the coin is fair, so the probability of getting a head or a tail is equal, it is 0.5.**  
+**You can analyse this input data in different ways:**   
+
+**1. Calculate the p-value**  
+**Here we calculate the p-value,which "is defined as the probability of obtaining a result equal to or "more extreme" than what was actually observed, assuming that the null hypothesis is true." (see [Wikipedia](https://en.wikipedia.org/wiki/P-value#Definition_and_interpretation)).**   
+**For a p-value which is less than a certain threshold $\alpha$ (which is often .05), we talk about a significant p-value and we would then reject the null hypothesis we had (in our case that the coin is fair/ unbiased).**
+**You can decide whether to fix N or k. Fix N would mean that you look at an experiment where it was clear at the beginning that we're going to throw the coin N times and the variable we wanted to determine was k. The same case for fix k - here we would have said from the beginning, that we will throw the coin as long as it takes until we got k heads and we would look at how many flips we needed for this amount of heads.**
   
-3. Estimation
-What we do here is, that we calculate a HDI for our posterior distribution and look whether the ROPE lies inside/outside/ in- and outside of the HDI. Hereby the ROPE is a small region around our parameter $\theta$.
-In our case, if we take a beta distributin as prior (e.g. $\alpha _{prior}$ = $\beta _{prior}$ = 1 as a "flat prior") we can get the posterior distribution really easy, it is again a beta distribution with the following parameters:  
-$\alpha _{posterior}$ = $\alpha _{prior}$ + k  
-$\beta _{posterior}$ = $\beta _{prior}$ + N − k  
-For this distribution we can then calculate the HDI and see how the relationship between the ROPE and the HDI is.  If the ROPE lies entirely outside of the HDI of the posterior, we can reject the value $\theta$, if it lies entirely inside the HDI we can say, that the value $\theta$ is believable. If some parts lay inside and some parts lay outside, we can't make a real statement.
+**2. Model comparison**  
+**Here we compare two models by calculating the so-called [Bayes-Factor BF](https://en.wikipedia.org/wiki/Bayes_factor). Hereby the coefficent of the probability of both models given the data is formed. The higher the coefficient the better is the model in the numerator compared to the model in the denominator.**
+  
+**3. Estimation**  
+**What we do here is, that we calculate a HDI for our posterior distribution and look whether the ROPE lies inside/outside/ in- and outside of the HDI. Hereby the ROPE is a small region around our parameter $\theta$.**
+**In our case, if we take a beta distributin as prior (e.g. $\alpha _{prior}$ = $\beta _{prior}$ = 1 as a "flat prior") we can get the posterior distribution really easy, it is again a beta distribution with the following parameters:**  
+**$\alpha _{posterior}$ = $\alpha _{prior}$ + k**  
+**$\beta _{posterior}$ = $\beta _{prior}$ + N − k**  
+**For this distribution we can then calculate the HDI and see how the relationship between the ROPE and the HDI is.  If the ROPE lies entirely outside of the HDI of the posterior, we can reject the value $\theta$, if it lies entirely inside the HDI we can say, that the value $\theta$ is believable. If some parts lay inside and some parts lay outside, we can't make a real statement.**  
 
-...............TODO ............
-Für das Tab zur Estimation, noch den Plot erklären und was man einstellen kann bzw eventuell auch nochmal was die ROPE sache da bedeutet?
-................................
-
-
-
-For a short comparison between the three methods explained shortly above have a look at this table:
-.... TODO ........
-hier seine Grafik hin? und dann aber auch schreiben, dass das von ihm ist?
-(copyright: ...)
-.......................
-
-Depending on which statements you want to make either the one or the other are a good way to analyse the data.
+**Depending on which statements you want to make either the one or the other are a good way to analyse the data.**
 
 #### Interesting values
 
 .....TODO........
 
 
-### Explanation fot the methods used in subtab "yet to be done..."
+### Explanation for the methods used in subtab "Bivariate Normal Data"
 
-.....TODO........
+**In the subtab "Coin Flip Data" we talked about one vector of discrete data - every value is either 0 or 1.**  
+**Now look not only at continuous but also at [bivariate normally distributed data](https://en.wikipedia.org/wiki/Multivariate_normal_distribution), which means we have in fact two vectors of data with normally distributed data. This data is created with $\mu_1$ = 0, $\mu_2$ = 0 and the correlation r between the two vectors which is specified by you.**  
+**Now those two vectors are seen as two events which may correlate in some way. If so, there should exist some linear model that fits the data. This means, that there is a linear relation between the two events - not really surprising. Those linear models could be pretty complex, but for more information click [here](https://en.wikipedia.org/wiki/Linear_model).**
+  
+**Because we do only have two vectors of data, the assumed linear model is pretty easy: Event Y is linear related to Event X.**  
+  
+**But how to do we decide, whether the the linear model fits or not? Here we think again about the Bayes factor also used in the tab "Coin Flip Data".**  
+**The models we use is at first our linear model, that Event Y is linear related to Event X and a second intercept-only null model, which just means that there is no real linear relation.**  
+**So if the Bayes factor takes a large value, this means that our linear model does fit the data.**  
+**If you want to learn more about the R-package we used for the Bayes factor, click [here](https://en.wikipedia.org/wiki/Linear_model).**  
+**As you may already figured out by yourself and as you will see by looking at the tab, there is a strong relation between the correlation you select and our correlated Bayes factor, because a high correlation provides the assumption of an existing linear model.**
+**So now get started and see what we are talking about here!**
 
+**PS: To have some fun stuff in there, we implemented the feature, that you can name can name the axes with some funny stuff - just as they [here](http://tylervigen.com/spurious-correlations). This also shows you one big problem of the correlation, but that's another story.**
 
 #### Interesting values
 

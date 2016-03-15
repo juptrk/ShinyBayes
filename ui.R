@@ -46,8 +46,8 @@ shinyUI(navbarPage("Bayes introduction",
                               mainPanel(
                                 tabsetPanel(type = "tabs", 
                                             tabPanel("p-value",
-                                                     plotOutput("plot_pvalue"),
                                                      textOutput("text_pvalue"),
+                                                     plotOutput("plot_pvalue"),
                                                      includeMarkdown("pvalue.Rmd")),
                                             tabPanel("comparison",
                                                      textOutput("text_comparison"),
@@ -88,8 +88,14 @@ shinyUI(navbarPage("Bayes introduction",
                                                      plotOutput("cor_plot")
                                             ),
                                             tabPanel("Bayes factor",
-                                                     "We're testing, whether a linear model
-                                                     models the given data well or not.",
+                                                     p("As we also explain in the tab Frequentist vs. Bayesian,
+                                                     we calculate the Bayes factor for deciding, whether the
+                                                     data fits to a linear model or not."),
+                                                     p("We assume for our linear model, that the Event Y is
+                                                      linear related to the Event X."),
+                                                     p("In the tabular you can see, what the interpration is
+                                                       for the calculated Bayes factor."),
+                                                     p("A big Bayes factor confirmes the linear model in this case."),
                                                      textOutput("linear_bayes_text"),
                                                      dataTableOutput("table_bf_linear"))
                                 )

@@ -4,15 +4,11 @@ author: "Julian Petruck"
 output: html_document
 ---
 
-Fix N und fix k überlegen für visualisierung und Erklärung
+  
+    
 As can be read from the definition the p-value is calculated in the following way:
 For each possible k ( 0 $\leq$ k $\leq$ N) we calculate the probabiliy P(k| N, theta) which in the coin flip case can be easily done by using the [binomial distribution](https://en.wikipedia.org/wiki/Binomial_distribution#Probability_mass_function). 
+  
 
-.....................  
-UNterscheidung text abhängig von Fix N oder K??????  
-Vielleicht noch reinschreiben welche Funktion bei fix k verwendet wird?
-Grafiken vergleichen mit denen auf den Folien
-..........................  
-
-The results for each k/N are plotted above. We look at the p-value for the two-tailed test. Therefore we sum the probabilities for the equal or more extreme results (which are the blue bars). The result is then our p-value.  
+The results for each k/N are plotted above. We look at the p-value for the two-tailed test. Therefore we sum the probabilities for the equal or more extreme results (which are the green bars). The result is then our p-value.  
 The red line indicates the probability for the k we look at.
