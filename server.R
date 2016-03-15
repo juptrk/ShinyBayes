@@ -313,14 +313,10 @@ shinyServer(function(input, output, session) {
     }
   })
   
+  # renders the text output for the p value
+  # we use the reactive method pvalue() which 
   output$text_pvalue <- renderText({
-    k = input$k
-    N = input$N
-    theta = input$theta
-    values <- NULL
-    pvalue <- 0
-    
-    #### TODO: k = 1 und k = 0 abfangen schmeißt fehler!
+
     if (input$option == "N fix") {
       pvalue <- pvalue()$pvalue
       if (pvalue <= alpha) {
@@ -346,12 +342,14 @@ shinyServer(function(input, output, session) {
     }
   })
   
-
+  # renders the text output for the Bayes factor for the coin flip data
   output$text_comparison <- renderText({
     BF = bf_coins()$BF
     paste("The Bayes factor is ", round(BF, 4), ".")
   })
   
+  # Renders the table with the interpretation of the Bayes factor
+  # for the coin flip data
   output$table_bf <- renderDataTable({
     BF = bf_coins()$BF
     
@@ -361,7 +359,7 @@ shinyServer(function(input, output, session) {
     bf_frame
   }, rownames = FALSE, options = list(paging = FALSE, searching = FALSE))
   
-  
+  # Renders the plot for the correlation
   output$cor_plot <- renderPlot({
     
     data = corr_set()
@@ -379,13 +377,15 @@ shinyServer(function(input, output, session) {
     p
   })
   
-  
+  # renders the text output for the Bayes factor for the bivariate data
   output$linear_bayes_text <- renderText({
     bf <- extractBF(linear_bf())
     
     paste("The Bayes factor is ", round(bf$bf, 4), ".")
   })
   
+  # renders the table with the interpretation of the Bayes factor
+  # for the bivariate data
   output$table_bf_linear <- renderDataTable({
     BF <- extractBF(linear_bf())
     
