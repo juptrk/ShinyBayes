@@ -38,11 +38,6 @@
 
 **Depending on which statements you want to make either the one or the other are a good way to analyse the data.**
 
-#### Interesting values
-
-.....TODO........
-
-
 ### Explanation for the methods used in subtab "Bivariate Normal Data"
 
 **In the subtab "Coin Flip Data" we talked about one vector of discrete data - every value is either 0 or 1.**  
@@ -53,14 +48,10 @@
   
 **But how to do we decide, whether the the linear model fits or not? Here we think again about the Bayes factor also used in the tab "Coin Flip Data".**  
 **The models we use is at first our linear model, that Event Y is linear related to Event X and a second intercept-only null model, which just means that there is no real linear relation.**  
-**So if the Bayes factor takes a large value, this means that our linear model does fit the data.**  
+**So if the Bayes factor takes a large value, this means that our linear model does fit the data much better than the intercept-only model.**  
 **If you want to learn more about the R-package we used for the Bayes factor, click [here](https://en.wikipedia.org/wiki/Linear_model).**  
-**As you may already figured out by yourself and as you will see by looking at the tab, there is a strong relation between the correlation you select and our correlated Bayes factor, because a high correlation provides the assumption of an existing linear model.**
+**As you may have already figured out by yourself and as you will see by looking at the tab, there is a strong relation between the correlation you select and our correlated Bayes factor, because a high correlation provides the assumption of an existing linear model. Looking at the data points plotted you will see that the more you would think that a straight line could approximate the data well, the higher the Bayes factor gets. In this way we hope to make the Bayes factor more intuitive for you - it's just the ratio of the probability of the data given our linear model and the probability of the data given the intercept-only model. The better the straight line describes the data the higher the probability of the data given the model gets and the probability of the data given the intercept-only model decreases - the Bayes factor increases. With that we get the same result as we would get with our intuition - having a high Bayes factor means that the data is described much better by the line than the intercept-only model.**
 **So now get started and see what we are talking about here!**
 
-**PS: To have some fun stuff in there, we implemented the feature, that you can name can name the axes with some funny stuff - just as they [here](http://tylervigen.com/spurious-correlations). This also shows you one big problem of the correlation, but that's another story.**
-
-#### Interesting values
-
-.....TODO........
+**PS: To have some fun stuff in there, we implemented the feature, that you can change the names of the axes to whatever you like - just as they [here](http://tylervigen.com/spurious-correlations). This also shows you one big problem of the correlation, but that's another story.**
 
